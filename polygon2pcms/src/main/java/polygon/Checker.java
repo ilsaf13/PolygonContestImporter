@@ -1,5 +1,6 @@
 package polygon;
 
+import org.apache.logging.log4j.LogManager;
 import xmlwrapper.XMLElement;
 
 public class Checker {
@@ -16,8 +17,12 @@ public class Checker {
         checker.source = sourceElement.getAttribute("path");
         checker.sourceType = sourceElement.getAttribute("type");
         XMLElement binaryElement = checkerElement.findFirstChild("binary");
+        if (!binaryElement.exists()) {
+            LogManager.getLogger(ProblemDescriptor.class).error("Checker binary not found");
+        }
         checker.binaryType = binaryElement.getAttribute("type");
         checker.binaryPath = binaryElement.getAttribute("path");
+
         return checker;
     }
 

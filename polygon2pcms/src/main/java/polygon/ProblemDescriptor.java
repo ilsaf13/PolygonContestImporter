@@ -19,6 +19,8 @@ public class ProblemDescriptor {
     protected String url;
     protected String input;
     protected String output;
+
+    protected int runCount;
     protected Checker checker;
     protected Interactor interactor;
 
@@ -69,22 +71,32 @@ public class ProblemDescriptor {
         url = problemElement.getAttribute("url");
 
         //names
+        log.info("parsing 'names' element");
         for (XMLElement nameElement : problemElement.findFirstChild("names").findChildren("name")) {
             names.put(nameElement.getAttribute("language"), nameElement.getAttribute("value"));
         }
 
         //judging
+        log.info("parsing 'judging' element");
         XMLElement judgingElement = problemElement.findFirstChild("judging");
         input = judgingElement.getAttribute("input-file");
         output = judgingElement.getAttribute("output-file");
+        runCount = 1;
+        try {
+            runCount = Integer.parseInt(judgingElement.getAttribute("run-count"));
+        } catch (NumberFormatException ignored) {
+
+        }
 
         //testset
+        log.info("parsing 'testset' element");
         for (XMLElement testsetElement : judgingElement.findChildren("testset")) {
             Testset ts = Testset.parse(testsetElement);
             testsets.put(ts.name, ts);
         }
 
         //files attachments
+        log.info("parsing 'attachments' element");
         XMLElement attachmentsElement = problemElement.findFirstChild("files").findFirstChild("attachments");
         if (attachmentsElement.exists()) {
             for (XMLElement fileElement : attachmentsElement.findChildren("file")) {
@@ -94,6 +106,7 @@ public class ProblemDescriptor {
         }
 
         // resources, solution assets
+        log.info("parsing 'resources' element");
         XMLElement resourcesElement = problemElement.findFirstChild("files").findFirstChild("resources");
         for (XMLElement fileElement : resourcesElement.findChildren("file")) {
             XMLElement assets = fileElement.findFirstChild("assets");
@@ -107,6 +120,7 @@ public class ProblemDescriptor {
             }
         }
 
+        log.info("parsing 'assets' element");
         //assets (checker)
         XMLElement assetsElement = problemElement.findFirstChild("assets");
         checker = Checker.parse(assetsElement.findFirstChild("checker"));
@@ -114,7 +128,7 @@ public class ProblemDescriptor {
         interactor = Interactor.parse(assetsElement.findFirstChild("interactor"));
         //assets (solutions)
         solutions.addAll(Arrays.asList(Solution.parse(assetsElement.findFirstChild("solutions"))));
-
+        log.info("finished parsing problem");
     }
 
     public String getShortName() {
@@ -135,6 +149,10 @@ public class ProblemDescriptor {
 
     public String getOutput() {
         return output;
+    }
+
+    public int getRunCount() {
+        return runCount;
     }
 
     public TreeMap<String, Testset> getTestsets() {

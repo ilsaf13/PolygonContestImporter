@@ -29,6 +29,8 @@ public class Problem {
     Verifier verifier;
     Interactor interactor;
 
+    Mediator mediator;
+
     private final ProblemDirectory polygonProblem;
 
     public Problem(ProblemDirectory polygonProblem, String idprefix, Properties languageProps, Properties executableProps, Properties importProps) {
@@ -152,6 +154,7 @@ public class Problem {
             }
         }
 
+        mediator = Mediator.parse(polygonProblem);
         solutions = Solution.parse(polygonProblem.getSolutions());
     }
 
@@ -189,6 +192,9 @@ public class Problem {
             log.warn("Testset 'tests' not found! This is the main testset in PCMS.");
         }
 
+        if (mediator != null) {
+            mediator.print(pw, "\t\t\t");
+        }
         verifier.print(pw, "\t\t\t");
         if (interactor != null) {
             interactor.print(pw, "\t\t\t");
@@ -210,6 +216,9 @@ public class Problem {
             log.warn("Testset 'tests' not found! This is the main testset in PCMS.");
         }
 
+        if (mediator != null) {
+            mediator.print(pw, "\t\t\t");
+        }
         verifier.print(pw, "\t\t\t");
         if (interactor != null) {
             interactor.print(pw, "\t\t\t");
