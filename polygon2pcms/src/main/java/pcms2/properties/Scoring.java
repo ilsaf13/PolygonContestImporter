@@ -4,7 +4,8 @@ import polygon.properties.PointsPolicy;
 
 public enum Scoring {
     SUM("sum"),
-    GROUP("group");
+    GROUP("group"),
+    MIN("min");
 
     private String word;
 
@@ -49,6 +50,8 @@ public enum Scoring {
                 return Scoring.SUM;
             case "group":
                 return Scoring.GROUP;
+            case "min":
+                return Scoring.MIN;
         }
         throw new AssertionError("Couldn't parse scoring = '" + word + "'");
     }
